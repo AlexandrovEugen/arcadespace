@@ -5,4 +5,6 @@ dependencies {
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
 	api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 	api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
+	api "io.github.libktx:ktx-app:$ktxVersion"
+	api "io.github.libktx:ktx-log:$ktxVersion"
 }

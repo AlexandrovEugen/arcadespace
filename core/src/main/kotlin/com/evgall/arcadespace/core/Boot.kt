@@ -1,20 +1,29 @@
 package com.evgall.arcadespace.core
 
+import com.badlogic.gdx.Application.LOG_DEBUG
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
+import com.evgall.arcadespace.core.screens.GameScreen
 import ktx.app.KtxGame
-import ktx.app.KtxScreen
 import ktx.log.Logger
 import ktx.log.debug
-import ktx.log.info
 import ktx.log.logger
 
 
 private val LOG: Logger = logger<Boot>()
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
-class Boot : KtxGame<KtxScreen>() {
+class Boot : KtxGame<ArcadeSpaceScreen>() {
+
+    val batch: Batch by lazy { SpriteBatch() }
+
+
     override fun create() {
+        Gdx.app.logLevel = LOG_DEBUG
         LOG.debug { "Create game instance" }
-        addScreen(FirstScreen())
-        setScreen<FirstScreen>()
+        addScreen(GameScreen(this))
+        setScreen<GameScreen>()
     }
 }

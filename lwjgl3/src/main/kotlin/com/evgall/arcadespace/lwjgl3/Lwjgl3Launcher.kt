@@ -7,7 +7,7 @@ import com.evgall.arcadespace.core.Boot
 fun main() {
     Lwjgl3Application(Boot(), Lwjgl3ApplicationConfiguration().apply {
         setTitle("Arcade Space")
-        setWindowedMode(640, 480)
+        setWindowedMode(9 * 32, 16 * 32)
         setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png")
     })
 }

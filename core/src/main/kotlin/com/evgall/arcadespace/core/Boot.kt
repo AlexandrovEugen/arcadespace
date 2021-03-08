@@ -13,6 +13,7 @@ import ktx.log.logger
 
 
 private val LOG: Logger = logger<Boot>()
+const val UNIT_SCALE = 1 / 16f
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class Boot : KtxGame<ArcadeSpaceScreen>() {

@@ -3,9 +3,11 @@ eclipse.project.name = appName + '-core'
 
 dependencies {
 	api "com.badlogicgames.gdx:gdx:$gdxVersion"
+	api "com.badlogicgames.ashley:ashley:$ashleyVersion"
 	api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 	api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
 	api "io.github.libktx:ktx-app:$ktxVersion"
+	api "io.github.libktx:ktx-ashley:$ktxVersion"
 	api "io.github.libktx:ktx-graphics:$ktxVersion"
 	api "io.github.libktx:ktx-log:$ktxVersion"
 }

@@ -3,6 +3,7 @@ package com.evgall.arcadespace.core.screens
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.MathUtils
 import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.UNIT_SCALE
 import com.evgall.arcadespace.core.ecs.component.GraphicsComponent
@@ -24,7 +25,7 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
         repeat(10) {
             engine.entity {
                 with<TransformComponent> {
-                    position.set(it.toFloat(), it.toFloat(), 0f)
+                    position.set(MathUtils.random(0f, 9f), MathUtils.random(0f, 16f), 0f)
                 }
                 with<GraphicsComponent> {
                     sprite.run {

@@ -54,7 +54,7 @@ class RenderSystem(
 
         graphicsComponent.sprite.run {
             rotation = transform.rotationDeg
-            setBounds(transform.position.x, transform.position.y, transform.size.x, transform.position.y)
+            setBounds(transform.position.x, transform.position.y, transform.size.x, transform.size.y)
             draw(batch)
         }
 

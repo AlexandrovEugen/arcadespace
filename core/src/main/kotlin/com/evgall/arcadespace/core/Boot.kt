@@ -49,6 +49,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                     graphicsAtlas.findRegion("ship_right")
                 )
             )
+            addSystem(AttachSystem())
             addSystem(AnimationSystem(graphicsAtlas))
             addSystem(RenderSystem(batch, viewPort))
             addSystem(RemoveSystem())

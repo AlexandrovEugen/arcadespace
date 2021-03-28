@@ -2,6 +2,7 @@ package com.evgall.arcadespace.core.screens
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
+import com.evgall.arcadespace.core.UNIT_SCALE
 import com.evgall.arcadespace.core.V_HEIGHT
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
@@ -23,14 +24,26 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
     override fun show() {
         LOG.debug { "First screen has been shown" }
 
-        engine.entity {
+        val player = engine.entity {
             with<TransformComponent> {
-                setInitialPosition(4.5f, 8f, 0f)
+                setInitialPosition(4.5f, 8f, 1f)
             }
             with<MoveComponent>()
             with<GraphicsComponent>()
             with<PlayerComponent>()
             with<FacingComponent>()
+        }
+
+        engine.entity {
+            with<TransformComponent>()
+            with<AttachComponent>(){
+                entity = player
+                offset.set(1f * UNIT_SCALE, -8f * UNIT_SCALE)
+            }
+            with<GraphicsComponent>()
+            with<AnimationComponent>{
+                type = AnimationType.FIRE
+            }
         }
 
         engine.entity {

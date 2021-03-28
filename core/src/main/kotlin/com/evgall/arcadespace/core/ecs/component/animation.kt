@@ -15,6 +15,7 @@ enum class AnimationType(
     val seedRate: Float = 1f
 ) {
     ARCADE_SPACE("arcade_space", Animation.PlayMode.LOOP, 1f),
+    FIRE("fire"),
     NONE("")
 }
 

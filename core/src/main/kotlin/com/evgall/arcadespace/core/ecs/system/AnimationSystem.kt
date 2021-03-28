@@ -43,7 +43,7 @@ class AnimationSystem(
         }
         val graphicsComponent = entity[GraphicsComponent.mapper]
         require(graphicsComponent != null) {
-            "Entity |entity| must have a Transform component.  entity=$entity"
+            "Entity |entity| must have a Graphic component.  entity=$entity"
         }
 
         if (aniComp.type  == AnimationType.NONE){

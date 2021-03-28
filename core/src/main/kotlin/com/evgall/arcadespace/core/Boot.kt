@@ -10,12 +10,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.evgall.arcadespace.core.ecs.system.PlayerAnimationSystem
-import com.evgall.arcadespace.core.ecs.system.PlayerSystem
-import com.evgall.arcadespace.core.ecs.system.RenderSystem
+import com.evgall.arcadespace.core.ecs.system.*
 import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
 import com.evgall.arcadespace.core.screens.GameScreen
 import ktx.app.KtxGame
+import ktx.ashley.add
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
@@ -23,11 +22,13 @@ import ktx.log.logger
 
 private val LOG: Logger = logger<Boot>()
 const val UNIT_SCALE = 1 / 16f
+const val V_WIDTH = 16
+const val V_HEIGHT = 9
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class Boot : KtxGame<ArcadeSpaceScreen>() {
 
-    val viewPort = FitViewport(9f, 16f)
+    val viewPort = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
 
     val batch: Batch by lazy { SpriteBatch() }
 
@@ -39,6 +40,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     val engine: Engine by lazy {
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
+            addSystem(MoveSystem())
             addSystem(
                 PlayerAnimationSystem(
                     graphicsAtlas.findRegion("ship_base"),
@@ -47,6 +49,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                 )
             )
             addSystem(RenderSystem(batch, viewPort))
+            addSystem(RemoveSystem())
         }
     }
 

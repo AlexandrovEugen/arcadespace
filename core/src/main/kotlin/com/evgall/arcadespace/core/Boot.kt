@@ -41,6 +41,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
             addSystem(MoveSystem())
+            addSystem(DamageSystem())
             addSystem(
                 PlayerAnimationSystem(
                     graphicsAtlas.findRegion("ship_base"),
@@ -50,6 +51,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
             )
             addSystem(RenderSystem(batch, viewPort))
             addSystem(RemoveSystem())
+            addSystem(DebugSystem())
         }
     }
 

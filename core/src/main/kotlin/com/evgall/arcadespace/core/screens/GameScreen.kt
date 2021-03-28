@@ -1,5 +1,6 @@
 package com.evgall.arcadespace.core.screens
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.ecs.component.*

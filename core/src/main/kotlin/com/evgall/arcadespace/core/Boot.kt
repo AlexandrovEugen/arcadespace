@@ -22,8 +22,8 @@ import ktx.log.logger
 
 private val LOG: Logger = logger<Boot>()
 const val UNIT_SCALE = 1 / 16f
-const val V_WIDTH = 16
-const val V_HEIGHT = 9
+const val V_WIDTH = 9
+const val V_HEIGHT = 16
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class Boot : KtxGame<ArcadeSpaceScreen>() {

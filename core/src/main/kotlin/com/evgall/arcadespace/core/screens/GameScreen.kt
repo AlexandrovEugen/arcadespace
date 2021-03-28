@@ -36,7 +36,7 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
         engine.entity {
             with<TransformComponent>{
                 size.set(
-                    V_HEIGHT.toFloat(),
+                    V_WIDTH.toFloat(),
                     DAMAGE_AREA_HEIGHT
                 )
             }

@@ -2,7 +2,10 @@ package com.evgall.arcadespace.core.screens
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
+import com.evgall.arcadespace.core.V_HEIGHT
+import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
+import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.log.Logger
@@ -28,6 +31,19 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
             with<GraphicsComponent>()
             with<PlayerComponent>()
             with<FacingComponent>()
+        }
+
+        engine.entity {
+            with<TransformComponent>{
+                size.set(
+                    V_HEIGHT.toFloat(),
+                    DAMAGE_AREA_HEIGHT
+                )
+            }
+            with<AnimationComponent>{
+                type =AnimationType.ARCADE_SPACE
+            }
+            with<GraphicsComponent>()
         }
     }
 

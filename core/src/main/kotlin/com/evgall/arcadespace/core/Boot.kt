@@ -33,7 +33,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     val batch: Batch by lazy { SpriteBatch() }
 
 
-    val graphicsAtlas by lazy {
+    private val graphicsAtlas by lazy {
         TextureAtlas(Gdx.files.internal("graphics/graphics.atlas"))
     }
 

@@ -1,12 +1,10 @@
 package com.evgall.arcadespace.core.screens
 
-import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.math.MathUtils
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
-import com.evgall.arcadespace.core.UNIT_SCALE
+import com.evgall.arcadespace.core.ecs.component.FacingComponent
 import com.evgall.arcadespace.core.ecs.component.GraphicsComponent
+import com.evgall.arcadespace.core.ecs.component.PlayerComponent
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
 import ktx.ashley.entity
 import ktx.ashley.with
@@ -17,32 +15,40 @@ import ktx.log.logger
 private val LOG: Logger = logger<GameScreen>()
 
 class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
-    private val playerTexture = Texture(Gdx.files.internal("graphics/ship_base.png"))
+
 
     override fun show() {
         LOG.debug { "First screen has been shown" }
 
-        repeat(10) {
-            engine.entity {
-                with<TransformComponent> {
-                    position.set(MathUtils.random(0f, 9f), MathUtils.random(0f, 16f), 0f)
-                }
-                with<GraphicsComponent> {
-                    sprite.run {
-                        setRegion(playerTexture)
-                        setSize(texture.width * UNIT_SCALE, texture.height * UNIT_SCALE)
-                        setOriginCenter()
-                    }
-                }
+        engine.entity {
+            with<TransformComponent> {
+                position.set(4.5f, 8f, 0f)
+            }
+            with<GraphicsComponent>()
+            with<PlayerComponent>()
+            with<FacingComponent>()
+        }
+        engine.entity {
+            with<TransformComponent> {
+                position.set(1f, 1f, 0f)
+            }
+            with<GraphicsComponent>{
+                setSpriteRegion(boot.graphicsAtlas.findRegion("ship_left"))
+            }
+        }
+        engine.entity {
+            with<TransformComponent> {
+                position.set(8f, 1f, 0f)
+            }
+            with<GraphicsComponent>{
+                setSpriteRegion(boot.graphicsAtlas.findRegion("ship_right"))
             }
         }
     }
 
     override fun render(delta: Float) {
+        (boot.batch as SpriteBatch).renderCalls = 0
         engine.update(delta)
-    }
-
-    override fun dispose() {
-        playerTexture.dispose()
+        LOG.debug { "Render calls: ${(boot.batch as SpriteBatch).renderCalls}" }
     }
 }

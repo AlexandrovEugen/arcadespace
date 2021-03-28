@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.evgall.arcadespace.core.ecs.system.PlayerAnimationSystem
@@ -29,21 +30,21 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     val viewPort = FitViewport(9f, 16f)
 
     val batch: Batch by lazy { SpriteBatch() }
-    private val defaultRegion by lazy {
-        TextureRegion(Texture(Gdx.files.internal("graphics/ship_base.png")))
-    }
-    private val leftRegion by lazy {
-        TextureRegion(Texture(Gdx.files.internal("graphics/ship_left.png")))
-    }
-    private val rightRegion by lazy {
-        TextureRegion(Texture(Gdx.files.internal("graphics/ship_right.png")))
+
+
+    val graphicsAtlas by lazy {
+        TextureAtlas(Gdx.files.internal("graphics/graphics.atlas"))
     }
 
     val engine: Engine by lazy {
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
             addSystem(
-                PlayerAnimationSystem(defaultRegion, leftRegion, rightRegion)
+                PlayerAnimationSystem(
+                    graphicsAtlas.findRegion("ship_base"),
+                    graphicsAtlas.findRegion("ship_left"),
+                    graphicsAtlas.findRegion("ship_right")
+                )
             )
             addSystem(RenderSystem(batch, viewPort))
         }
@@ -61,9 +62,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
 
         LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
         batch.dispose()
-        defaultRegion.texture.dispose()
-        leftRegion.texture.dispose()
-        rightRegion.texture.dispose()
+        graphicsAtlas.dispose()
     }
 
 }

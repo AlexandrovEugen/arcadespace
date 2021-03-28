@@ -7,7 +7,7 @@ import com.evgall.arcadespace.core.Boot
 import ktx.app.KtxScreen
 
 abstract class ArcadeSpaceScreen(
-    private val boot: Boot,
+    val boot: Boot,
     val batch: Batch = boot.batch,
     private val viewPort: Viewport = boot.viewPort,
     val engine: Engine = boot.engine

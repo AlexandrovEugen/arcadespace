@@ -1,16 +1,21 @@
 package com.evgall.arcadespace.core.screens
 
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
+import com.evgall.arcadespace.core.V_HEIGHT
+import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
+import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
+import kotlin.math.min
 
 private val LOG: Logger = logger<GameScreen>()
+
+private const val MAX_DELTA_TIME = 1 / 20f
 
 class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
 
@@ -20,18 +25,33 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
 
         engine.entity {
             with<TransformComponent> {
-                position.set(4.5f, 8f, 0f)
+                setInitialPosition(4.5f, 8f, 0f)
             }
             with<MoveComponent>()
             with<GraphicsComponent>()
             with<PlayerComponent>()
             with<FacingComponent>()
         }
+
+        engine.entity {
+            with<TransformComponent>{
+                size.set(
+                    V_WIDTH.toFloat(),
+                    DAMAGE_AREA_HEIGHT
+                )
+            }
+            with<AnimationComponent>{
+                type =AnimationType.ARCADE_SPACE
+            }
+            with<GraphicsComponent>()
+        }
     }
 
     override fun render(delta: Float) {
         (boot.batch as SpriteBatch).renderCalls = 0
-        engine.update(delta)
-        LOG.debug { "Render calls: ${(boot.batch as SpriteBatch).renderCalls}" }
+        engine.update(min(MAX_DELTA_TIME, delta))
+        LOG.debug {
+            "Render calls: ${(boot.batch as SpriteBatch).renderCalls}"
+        }
     }
 }

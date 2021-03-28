@@ -22,8 +22,8 @@ import ktx.log.logger
 
 private val LOG: Logger = logger<Boot>()
 const val UNIT_SCALE = 1 / 16f
-const val V_WIDTH = 16
-const val V_HEIGHT = 9
+const val V_WIDTH = 9
+const val V_HEIGHT = 16
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class Boot : KtxGame<ArcadeSpaceScreen>() {
@@ -33,7 +33,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     val batch: Batch by lazy { SpriteBatch() }
 
 
-    val graphicsAtlas by lazy {
+    private val graphicsAtlas by lazy {
         TextureAtlas(Gdx.files.internal("graphics/graphics.atlas"))
     }
 
@@ -49,6 +49,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                     graphicsAtlas.findRegion("ship_right")
                 )
             )
+            addSystem(AnimationSystem(graphicsAtlas))
             addSystem(RenderSystem(batch, viewPort))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())

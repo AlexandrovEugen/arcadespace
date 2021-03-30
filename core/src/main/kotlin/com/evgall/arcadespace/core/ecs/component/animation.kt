@@ -3,9 +3,9 @@ package com.evgall.arcadespace.core.ecs.component
 import com.badlogic.ashley.core.Component
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.utils.Array
 import com.badlogic.gdx.utils.Pool
 import ktx.ashley.mapperFor
+import ktx.collections.GdxArray
 
 private const val DEFAULT_FRAME_DURATION = 1 / 20f
 
@@ -16,12 +16,17 @@ enum class AnimationType(
 ) {
     ARCADE_SPACE("arcade_space", Animation.PlayMode.LOOP, 1f),
     FIRE("fire"),
-    NONE("")
+    NONE(""),
+    SPEED_1("orb_blue"),
+    SPEED_2("orb_yellow"),
+    LIFE("life"),
+    SHIELD("shield")
 }
+
 
 class Animation2D(
     val type: AnimationType,
-    val keyFrames: Array<out TextureRegion>,
+    val keyFrames: GdxArray<out TextureRegion>,
     playMode: PlayMode = PlayMode.LOOP,
     speedRate: Float = 1f
 

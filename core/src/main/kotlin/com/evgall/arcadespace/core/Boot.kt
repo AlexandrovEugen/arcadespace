@@ -8,13 +8,11 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.evgall.arcadespace.core.ecs.system.*
 import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
 import com.evgall.arcadespace.core.screens.GameScreen
 import ktx.app.KtxGame
-import ktx.ashley.add
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
@@ -24,10 +22,14 @@ private val LOG: Logger = logger<Boot>()
 const val UNIT_SCALE = 1 / 16f
 const val V_WIDTH = 9
 const val V_HEIGHT = 16
+const val V_WIDTH_PIXELS = 134
+const val V_HEIGHT_PIXELS = 240
+
 
 /** [com.badlogic.gdx.ApplicationListener] implementation shared by all platforms.  */
 class Boot : KtxGame<ArcadeSpaceScreen>() {
 
+    val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val viewPort = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
 
     val batch: Batch by lazy { SpriteBatch() }
@@ -35,6 +37,10 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
 
     private val graphicsAtlas by lazy {
         TextureAtlas(Gdx.files.internal("graphics/graphics.atlas"))
+    }
+
+    private val backgroundTexture by lazy {
+        Texture(Gdx.files.internal("graphics/background.png"))
     }
 
     val engine: Engine by lazy {
@@ -52,7 +58,12 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(graphicsAtlas))
-            addSystem(RenderSystem(batch, viewPort))
+            addSystem(RenderSystem(
+                uiViewport,
+                batch,
+                viewPort,
+                backgroundTexture
+            ))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }
@@ -70,6 +81,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
 
         LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
         batch.dispose()
+        backgroundTexture.dispose()
         graphicsAtlas.dispose()
     }
 

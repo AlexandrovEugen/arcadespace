@@ -1,21 +1,24 @@
 package com.evgall.arcadespace.core.ecs.system
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.viewport.FitViewport
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.evgall.arcadespace.core.ecs.component.GraphicsComponent
+import com.evgall.arcadespace.core.ecs.component.PowerUpType
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
+import com.evgall.arcadespace.core.ecs.event.*
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
 import ktx.log.Logger
 import ktx.log.error
 import ktx.log.logger
+import kotlin.math.min
 
 
 private val LOG: Logger = logger<RenderSystem>()
@@ -24,13 +27,14 @@ class RenderSystem(
     private val uiViewport: Viewport,
     private val batch: Batch,
     private val viewPort: Viewport,
-    backgroundTexture: Texture
+    backgroundTexture: Texture,
+    private val gameEventManager: GameEventManager
 ) : SortedIteratingSystem(
     allOf(TransformComponent::class, GraphicsComponent::class).get(),
     compareBy { entity ->
         entity[TransformComponent.mapper]
     }
-) {
+), GameEventListener {
 
 
     private val backgroundScrollingSpeed = Vector2(0.03f, 0.025f)
@@ -39,11 +43,25 @@ class RenderSystem(
         setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
     })
 
+    override fun addedToEngine(engine: Engine) {
+        super.addedToEngine(engine)
+        gameEventManager.addListener(GameEventType.COLLECT_POWER_UP_EVENT, this)
+    }
+
+    override fun removedFromEngine(engine: Engine) {
+        super.removedFromEngine(engine)
+        gameEventManager.removeListener(GameEventType.COLLECT_POWER_UP_EVENT, this)
+    }
+
     override fun update(deltaTime: Float) {
 
         uiViewport.apply()
         batch.use(uiViewport.camera.combined) {
             background.run {
+                backgroundScrollingSpeed.y = min(
+                    -0.25f,
+                    backgroundScrollingSpeed.y + deltaTime * (1f / 10f)
+                )
                 //render background
                 scroll(
                     backgroundScrollingSpeed.x * deltaTime,
@@ -89,5 +107,17 @@ class RenderSystem(
             draw(batch)
         }
 
+    }
+
+    override fun onEvent(type: GameEventType, data: GameEvent?) {
+        if (type == GameEventType.COLLECT_POWER_UP_EVENT) {
+            val eventData = data as GameEventCollectPowerUp
+            if (eventData.type == PowerUpType.SPEED_1) {
+                backgroundScrollingSpeed.y -= 0.25f
+            }
+            if (eventData.type == PowerUpType.SPEED_2) {
+                backgroundScrollingSpeed.y -= 0.5f
+            }
+        }
     }
 }

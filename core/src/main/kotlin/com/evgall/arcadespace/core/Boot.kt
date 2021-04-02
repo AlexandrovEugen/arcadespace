@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.evgall.arcadespace.core.ecs.event.GameEventManager
 import com.evgall.arcadespace.core.ecs.system.*
 import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
 import com.evgall.arcadespace.core.screens.GameScreen
@@ -31,8 +32,8 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
 
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
     val viewPort = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
-
     val batch: Batch by lazy { SpriteBatch() }
+    val gameEventManager = GameEventManager()
 
 
     private val graphicsAtlas by lazy {
@@ -47,8 +48,8 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
             addSystem(MoveSystem())
-            addSystem(PowerUpSystem())
-            addSystem(DamageSystem())
+            addSystem(PowerUpSystem(gameEventManager))
+            addSystem(DamageSystem(gameEventManager))
             addSystem(
                 PlayerAnimationSystem(
                     graphicsAtlas.findRegion("ship_base"),
@@ -62,7 +63,8 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                 uiViewport,
                 batch,
                 viewPort,
-                backgroundTexture
+                backgroundTexture,
+                gameEventManager
             ))
             addSystem(RemoveSystem())
             addSystem(DebugSystem())

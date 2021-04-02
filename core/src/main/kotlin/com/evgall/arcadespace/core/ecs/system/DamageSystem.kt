@@ -5,6 +5,10 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.evgall.arcadespace.core.ecs.component.PlayerComponent
 import com.evgall.arcadespace.core.ecs.component.RemoveComponent
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
+import com.evgall.arcadespace.core.ecs.event.GameEvent
+import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.ecs.event.GameEventPlayerDeath
+import com.evgall.arcadespace.core.ecs.event.GameEventType
 import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.exclude
@@ -15,7 +19,9 @@ const val DAMAGE_AREA_HEIGHT = 2f
 private const val DAMAGE_PER_SECOND = 25f
 private const val DAMAGE_EXPLOSION_DURATION = 0.9f
 
-class DamageSystem : IteratingSystem(
+class DamageSystem(
+    private val gameEventManager: GameEventManager
+) : IteratingSystem(
     allOf(PlayerComponent::class, TransformComponent::class)
         .exclude(RemoveComponent::class).get()
 ) {
@@ -46,6 +52,10 @@ class DamageSystem : IteratingSystem(
 
             playerComponent.life -= damage
             if (playerComponent.life <= 0f) {
+                gameEventManager.dispatchEvent(GameEventType.PLAYER_DEATH, GameEventPlayerDeath.apply {
+                    this.distance = playerComponent.distance
+
+                })
                 entity.addComponent<RemoveComponent>(engine) {
                     delay = DAMAGE_EXPLOSION_DURATION
                 }

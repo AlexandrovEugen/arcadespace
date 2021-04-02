@@ -6,6 +6,9 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
+import com.evgall.arcadespace.core.ecs.event.GameEventCollectPowerUp
+import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.ecs.event.GameEventType
 import ktx.ashley.*
 import ktx.collections.GdxArray
 import ktx.collections.gdxArrayOf
@@ -34,7 +37,9 @@ private class SpawnPattern(
     val types: GdxArray<PowerUpType> = gdxArrayOf(type1, type2, type3, type4, type5)
 )
 
-class PowerUpSystem :
+class PowerUpSystem(
+    private val gameEventManager: GameEventManager
+) :
     IteratingSystem(allOf(PowerUpComponent::class, TransformComponent::class).exclude(RemoveComponent::class).get()) {
 
     private val playerBoundRect = Rectangle()
@@ -150,6 +155,11 @@ class PowerUpSystem :
             }
         }
 
+        gameEventManager.dispatchEvent(GameEventType.COLLECT_POWER_UP_EVENT,
+        GameEventCollectPowerUp.apply {
+            this.player = player
+            this.type = powerUpComponent.type
+        })
         powerUp.addComponent<RemoveComponent>(engine)
     }
 }

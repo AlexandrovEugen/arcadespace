@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.evgall.arcadespace.core.Boot
+import com.evgall.arcadespace.core.ecs.event.GameEventManager
 import ktx.app.KtxScreen
 
 abstract class ArcadeSpaceScreen(
@@ -11,8 +12,10 @@ abstract class ArcadeSpaceScreen(
     val batch: Batch = boot.batch,
     private val viewPort: Viewport = boot.viewPort,
     private val uiViewPort: Viewport = boot.uiViewport,
-    val engine: Engine = boot.engine
+    val engine: Engine = boot.engine,
+    val gameEventManager: GameEventManager = boot.gameEventManager
 ) : KtxScreen {
+
 
 
     override fun resize(width: Int, height: Int) {

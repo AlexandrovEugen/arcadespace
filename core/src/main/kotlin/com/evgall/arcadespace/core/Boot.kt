@@ -50,6 +50,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
             addSystem(MoveSystem())
             addSystem(PowerUpSystem(gameEventManager))
             addSystem(DamageSystem(gameEventManager))
+            addSystem(CameraShakeSystem(gameEventManager, viewPort.camera))
             addSystem(
                 PlayerAnimationSystem(
                     graphicsAtlas.findRegion("ship_base"),
@@ -59,13 +60,15 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
             )
             addSystem(AttachSystem())
             addSystem(AnimationSystem(graphicsAtlas))
-            addSystem(RenderSystem(
-                uiViewport,
-                batch,
-                viewPort,
-                backgroundTexture,
-                gameEventManager
-            ))
+            addSystem(
+                RenderSystem(
+                    uiViewport,
+                    batch,
+                    viewPort,
+                    backgroundTexture,
+                    gameEventManager
+                )
+            )
             addSystem(RemoveSystem())
             addSystem(DebugSystem())
         }

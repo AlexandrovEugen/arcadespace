@@ -25,14 +25,14 @@ class DamageSystem(
 ) {
 
 
-    override fun processEntity(entity: Entity, deltaTime: Float) {
-        val transformComponent = entity[TransformComponent.mapper]
+    override fun processEntity(player: Entity, deltaTime: Float) {
+        val transformComponent = player[TransformComponent.mapper]
         require(transformComponent != null) {
-            "Entity |entity| must have Transform component. entity=$entity"
+            "Entity |entity| must have Transform component. entity=$player"
         }
-        val playerComponent = entity[PlayerComponent.mapper]
+        val playerComponent = player[PlayerComponent.mapper]
         require(playerComponent != null) {
-            "Entity |entity| must have Player component. entity=$entity"
+            "Entity |entity| must have Player component. entity=$player"
         }
 
         if (transformComponent.position.y <= DAMAGE_AREA_HEIGHT) {
@@ -49,11 +49,16 @@ class DamageSystem(
             }
 
             playerComponent.life -= damage
+            gameEventManager.dispatchEvent(GameEvent.PlayerHit.apply {
+                this.player = player
+                this.life = playerComponent.life
+                this.maxLife = playerComponent.maxLife
+            })
             if (playerComponent.life <= 0f) {
                 gameEventManager.dispatchEvent(GameEvent.PlayerDeath.apply {
                     this.distance = playerComponent.distance
                 })
-                entity.addComponent<RemoveComponent>(engine) {
+                player.addComponent<RemoveComponent>(engine) {
                     delay = DAMAGE_EXPLOSION_DURATION
                 }
             }

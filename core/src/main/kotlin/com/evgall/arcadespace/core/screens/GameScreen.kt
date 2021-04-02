@@ -7,8 +7,6 @@ import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
 import com.evgall.arcadespace.core.ecs.event.GameEvent
 import com.evgall.arcadespace.core.ecs.event.GameEventListener
-import com.evgall.arcadespace.core.ecs.event.GameEventPlayerDeath
-import com.evgall.arcadespace.core.ecs.event.GameEventType
 import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import ktx.ashley.entity
 import ktx.ashley.with
@@ -27,7 +25,7 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot), GameEventListener {
     override fun show() {
         LOG.debug { "First screen has been shown" }
 
-        gameEventManager.addListener(GameEventType.PLAYER_DEATH, this)
+        gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
 
         spawnPlayer()
 
@@ -47,7 +45,7 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot), GameEventListener {
 
     override fun hide() {
         super.hide()
-        gameEventManager.removeListener(GameEventType.PLAYER_DEATH, this)
+        gameEventManager.removeListener(GameEvent.PlayerDeath::class, this)
     }
 
     private fun spawnPlayer() {
@@ -82,10 +80,10 @@ class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot), GameEventListener {
         }
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.PLAYER_DEATH){
-            val event  = data as GameEventPlayerDeath
-            spawnPlayer()
+    override fun onEvent(event: GameEvent) {
+        when (event) {
+            is GameEvent.PlayerDeath -> spawnPlayer()
+            GameEvent.CollectPowerUp -> TODO()
         }
     }
 }

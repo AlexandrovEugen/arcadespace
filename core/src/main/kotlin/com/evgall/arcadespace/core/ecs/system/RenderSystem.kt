@@ -11,7 +11,9 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.evgall.arcadespace.core.ecs.component.GraphicsComponent
 import com.evgall.arcadespace.core.ecs.component.PowerUpType
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
-import com.evgall.arcadespace.core.ecs.event.*
+import com.evgall.arcadespace.core.ecs.event.GameEvent
+import com.evgall.arcadespace.core.ecs.event.GameEventListener
+import com.evgall.arcadespace.core.ecs.event.GameEventManager
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use
@@ -45,12 +47,12 @@ class RenderSystem(
 
     override fun addedToEngine(engine: Engine) {
         super.addedToEngine(engine)
-        gameEventManager.addListener(GameEventType.COLLECT_POWER_UP_EVENT, this)
+        gameEventManager.addListener(GameEvent.CollectPowerUp::class, this)
     }
 
     override fun removedFromEngine(engine: Engine) {
         super.removedFromEngine(engine)
-        gameEventManager.removeListener(GameEventType.COLLECT_POWER_UP_EVENT, this)
+        gameEventManager.removeListener(GameEvent.CollectPowerUp::class, this)
     }
 
     override fun update(deltaTime: Float) {
@@ -109,15 +111,12 @@ class RenderSystem(
 
     }
 
-    override fun onEvent(type: GameEventType, data: GameEvent?) {
-        if (type == GameEventType.COLLECT_POWER_UP_EVENT) {
-            val eventData = data as GameEventCollectPowerUp
-            if (eventData.type == PowerUpType.SPEED_1) {
-                backgroundScrollingSpeed.y -= 0.25f
-            }
-            if (eventData.type == PowerUpType.SPEED_2) {
-                backgroundScrollingSpeed.y -= 0.5f
-            }
+    override fun onEvent(event: GameEvent) {
+        val powerUpEvent = event as GameEvent.CollectPowerUp
+        if (powerUpEvent.type == PowerUpType.SPEED_1) {
+            backgroundScrollingSpeed.y -= 0.25f
+        } else if (powerUpEvent.type == PowerUpType.SPEED_2) {
+            backgroundScrollingSpeed.y -= 0.5f
         }
     }
 }

@@ -6,9 +6,8 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
-import com.evgall.arcadespace.core.ecs.event.GameEventCollectPowerUp
+import com.evgall.arcadespace.core.ecs.event.GameEvent
 import com.evgall.arcadespace.core.ecs.event.GameEventManager
-import com.evgall.arcadespace.core.ecs.event.GameEventType
 import ktx.ashley.*
 import ktx.collections.GdxArray
 import ktx.collections.gdxArrayOf
@@ -65,10 +64,10 @@ class PowerUpSystem(
                 LOG.debug { "Next pattern: $currentSpawnPattern" }
             }
             val powerUpType = currentSpawnPattern.removeIndex(0)
-            if (powerUpType == PowerUpType.NONE){
+            if (powerUpType == PowerUpType.NONE) {
                 return
             }
-            spawnPowerUp(powerUpType, 1f * MathUtils.random(0, V_WIDTH -1), 16f)
+            spawnPowerUp(powerUpType, 1f * MathUtils.random(0, V_WIDTH - 1), 16f)
         }
 
     }
@@ -78,14 +77,14 @@ class PowerUpSystem(
             with<TransformComponent> {
                 setInitialPosition(x, y, 0f)
             }
-            with<PowerUpComponent>{
+            with<PowerUpComponent> {
                 type = powerUpType
             }
-            with<AnimationComponent>{
+            with<AnimationComponent> {
                 type = powerUpType.animationType
             }
             with<GraphicsComponent>()
-            with<MoveComponent>{
+            with<MoveComponent> {
                 speed.y = POWER_UP_SPEED
             }
 
@@ -98,13 +97,12 @@ class PowerUpSystem(
             "Entity |entity| must have Transform component. entity=$entity"
         }
 
-        if (transform.position.y <= 1f){
+        if (transform.position.y <= 1f) {
             entity.addComponent<RemoveComponent>(engine)
             return
-        }
-        else {
+        } else {
             powerUpBoundRect.set(transform.position.x, transform.position.y, transform.size.x, transform.size.y)
-            playerEntities.forEach{ player ->
+            playerEntities.forEach { player ->
                 player[TransformComponent.mapper]?.let { trComp ->
                     playerBoundRect.set(
                         trComp.position.x,
@@ -112,7 +110,7 @@ class PowerUpSystem(
                         trComp.size.x,
                         trComp.size.y
                     )
-                    if (playerBoundRect.overlaps(powerUpBoundRect)){
+                    if (playerBoundRect.overlaps(powerUpBoundRect)) {
                         collectPowerUp(player, entity)
                     }
                 }
@@ -122,14 +120,14 @@ class PowerUpSystem(
 
     private fun collectPowerUp(player: Entity, powerUp: Entity) {
         val powerUpComponent = powerUp[PowerUpComponent.mapper]
-        require(powerUpComponent !=null){
+        require(powerUpComponent != null) {
             "Entity |entity| mast have Power Up Component. entity =$powerUp"
         }
         LOG.debug {
             "Picking up power up of type ${powerUpComponent.type}"
         }
 
-        when(powerUpComponent.type){
+        when (powerUpComponent.type) {
             PowerUpType.SPEED_1 -> {
                 player[MoveComponent.mapper]?.let { moveComponent ->
                     moveComponent.speed.y += BOOST_1_SPEED_GAIN
@@ -155,8 +153,7 @@ class PowerUpSystem(
             }
         }
 
-        gameEventManager.dispatchEvent(GameEventType.COLLECT_POWER_UP_EVENT,
-        GameEventCollectPowerUp.apply {
+        gameEventManager.dispatchEvent(GameEvent.CollectPowerUp.apply {
             this.player = player
             this.type = powerUpComponent.type
         })

@@ -7,8 +7,6 @@ import com.evgall.arcadespace.core.ecs.component.RemoveComponent
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
 import com.evgall.arcadespace.core.ecs.event.GameEvent
 import com.evgall.arcadespace.core.ecs.event.GameEventManager
-import com.evgall.arcadespace.core.ecs.event.GameEventPlayerDeath
-import com.evgall.arcadespace.core.ecs.event.GameEventType
 import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.exclude
@@ -52,9 +50,8 @@ class DamageSystem(
 
             playerComponent.life -= damage
             if (playerComponent.life <= 0f) {
-                gameEventManager.dispatchEvent(GameEventType.PLAYER_DEATH, GameEventPlayerDeath.apply {
+                gameEventManager.dispatchEvent(GameEvent.PlayerDeath.apply {
                     this.distance = playerComponent.distance
-
                 })
                 entity.addComponent<RemoveComponent>(engine) {
                     delay = DAMAGE_EXPLOSION_DURATION

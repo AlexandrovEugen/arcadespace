@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
-import com.evgall.arcadespace.core.ecs.event.GameEvent
-import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.event.GameEvent
+import com.evgall.arcadespace.core.event.GameEventManager
 import ktx.ashley.*
 import ktx.collections.GdxArray
 import ktx.collections.gdxArrayOf

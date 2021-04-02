@@ -5,8 +5,8 @@ import com.badlogic.ashley.systems.IteratingSystem
 import com.evgall.arcadespace.core.ecs.component.PlayerComponent
 import com.evgall.arcadespace.core.ecs.component.RemoveComponent
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
-import com.evgall.arcadespace.core.ecs.event.GameEvent
-import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.event.GameEvent
+import com.evgall.arcadespace.core.event.GameEventManager
 import ktx.ashley.addComponent
 import ktx.ashley.allOf
 import ktx.ashley.exclude

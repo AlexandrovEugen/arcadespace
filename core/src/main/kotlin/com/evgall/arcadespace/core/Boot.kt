@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.evgall.arcadespace.core.ecs.asset.TextureAsset
 import com.evgall.arcadespace.core.ecs.asset.TextureAtlasAsset
-import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.event.GameEventManager
 import com.evgall.arcadespace.core.ecs.system.*
 import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
 import com.evgall.arcadespace.core.screens.LoadingScreen

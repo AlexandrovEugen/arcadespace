@@ -1,10 +1,10 @@
-package com.evgall.arcadespace.core.ecs.event
+package com.evgall.arcadespace.core.event
 
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.utils.ObjectMap
 import com.evgall.arcadespace.core.ecs.component.PowerUpType
 import ktx.collections.GdxSet
-import ktx.collections.set
+import ktx.collections.getOrPut
 import kotlin.reflect.KClass
 
 
@@ -43,11 +43,7 @@ class GameEventManager {
 
 
     fun addListener(type: KClass<out GameEvent>, listener: GameEventListener) {
-        var eventListeners = listeners[type]
-        if (eventListeners == null) {
-            eventListeners = GdxSet()
-            listeners[type] = eventListeners
-        }
+        val eventListeners = listeners.getOrPut(type) { GdxSet() }
         eventListeners.add(listener)
     }
 
@@ -58,7 +54,7 @@ class GameEventManager {
 
 
     fun removeListener(listener: GameEventListener) {
-        listeners.values().forEach {
+        ObjectMap.Values(listeners).forEach {
             it.remove(listener)
         }
     }

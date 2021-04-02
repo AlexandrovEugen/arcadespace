@@ -75,7 +75,7 @@ class MoveSystem : IteratingSystem(
         if (playerComponent != null) {
             //player movement
             entity[FacingComponent.mapper]?.let { facingComponent ->
-                movePlayer(transformComponent, moveComponent, playerComponent, facingComponent, deltaTime)
+                movePlayer(transformComponent, moveComponent, facingComponent, deltaTime)
             }
         } else {
             //other movement like powerups
@@ -86,7 +86,6 @@ class MoveSystem : IteratingSystem(
     private fun movePlayer(
         transformComponent: TransformComponent,
         moveComponent: MoveComponent,
-        playerComponent: PlayerComponent,
         facingComponent: FacingComponent,
         deltaTime: Float
     ) {

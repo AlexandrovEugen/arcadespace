@@ -11,9 +11,9 @@ import com.badlogic.gdx.utils.viewport.Viewport
 import com.evgall.arcadespace.core.ecs.component.GraphicsComponent
 import com.evgall.arcadespace.core.ecs.component.PowerUpType
 import com.evgall.arcadespace.core.ecs.component.TransformComponent
-import com.evgall.arcadespace.core.ecs.event.GameEvent
-import com.evgall.arcadespace.core.ecs.event.GameEventListener
-import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.event.GameEvent
+import com.evgall.arcadespace.core.event.GameEventListener
+import com.evgall.arcadespace.core.event.GameEventManager
 import ktx.ashley.allOf
 import ktx.ashley.get
 import ktx.graphics.use

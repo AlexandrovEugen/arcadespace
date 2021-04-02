@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.utils.Pool
-import com.evgall.arcadespace.core.ecs.event.GameEvent
-import com.evgall.arcadespace.core.ecs.event.GameEventListener
-import com.evgall.arcadespace.core.ecs.event.GameEventManager
+import com.evgall.arcadespace.core.event.GameEvent
+import com.evgall.arcadespace.core.event.GameEventListener
+import com.evgall.arcadespace.core.event.GameEventManager
 import ktx.collections.GdxArray
 
 class CameraShake : Pool.Poolable {
@@ -59,7 +59,7 @@ class CameraShakePool(private val gameCamera: Camera): Pool<CameraShake>(){
 
 class CameraShakeSystem(
     private val gameEventManager: GameEventManager,
-    private val camera: Camera
+    camera: Camera
 ) : EntitySystem(), GameEventListener {
 
     private val cameraShakePool = CameraShakePool(camera)

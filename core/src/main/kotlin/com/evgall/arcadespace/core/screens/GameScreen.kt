@@ -6,8 +6,8 @@ import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.UNIT_SCALE
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
-import com.evgall.arcadespace.core.ecs.event.GameEvent
-import com.evgall.arcadespace.core.ecs.event.GameEventListener
+import com.evgall.arcadespace.core.event.GameEvent
+import com.evgall.arcadespace.core.event.GameEventListener
 import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import ktx.ashley.entity
 import ktx.ashley.with
@@ -87,7 +87,7 @@ class GameScreen(
     override fun onEvent(event: GameEvent) {
         when (event) {
             is GameEvent.PlayerDeath -> spawnPlayer()
-            GameEvent.CollectPowerUp -> TODO()
+            else -> TODO()
         }
     }
 }

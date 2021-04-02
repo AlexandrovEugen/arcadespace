@@ -4,16 +4,18 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.evgall.arcadespace.core.ecs.asset.TextureAsset
+import com.evgall.arcadespace.core.ecs.asset.TextureAtlasAsset
 import com.evgall.arcadespace.core.ecs.event.GameEventManager
 import com.evgall.arcadespace.core.ecs.system.*
 import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
-import com.evgall.arcadespace.core.screens.GameScreen
+import com.evgall.arcadespace.core.screens.LoadingScreen
 import ktx.app.KtxGame
+import ktx.assets.async.AssetStorage
+import ktx.async.KtxAsync
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
@@ -34,17 +36,14 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     val viewPort = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val batch: Batch by lazy { SpriteBatch() }
     val gameEventManager = GameEventManager()
-
-
-    private val graphicsAtlas by lazy {
-        TextureAtlas(Gdx.files.internal("graphics/graphics.atlas"))
-    }
-
-    private val backgroundTexture by lazy {
-        Texture(Gdx.files.internal("graphics/background.png"))
+    val assets: AssetStorage by lazy {
+        KtxAsync.initiate()
+        AssetStorage()
     }
 
     val engine: Engine by lazy {
+        val graphicsAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.description]
+
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
             addSystem(MoveSystem())
@@ -65,7 +64,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                     uiViewport,
                     batch,
                     viewPort,
-                    backgroundTexture,
+                    assets[TextureAsset.BACKGROUND.description],
                     gameEventManager
                 )
             )
@@ -77,8 +76,8 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     override fun create() {
         Gdx.app.logLevel = LOG_DEBUG
         LOG.debug { "Create game instance" }
-        addScreen(GameScreen(this))
-        setScreen<GameScreen>()
+        addScreen(LoadingScreen(this))
+        setScreen<LoadingScreen>()
     }
 
     override fun dispose() {
@@ -86,8 +85,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
 
         LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
         batch.dispose()
-        backgroundTexture.dispose()
-        graphicsAtlas.dispose()
+        assets.dispose()
     }
 
 }

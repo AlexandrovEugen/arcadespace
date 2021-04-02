@@ -1,5 +1,6 @@
 package com.evgall.arcadespace.core.screens
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.UNIT_SCALE
@@ -19,11 +20,14 @@ private val LOG: Logger = logger<GameScreen>()
 
 private const val MAX_DELTA_TIME = 1 / 20f
 
-class GameScreen(boot: Boot) : ArcadeSpaceScreen(boot), GameEventListener {
+class GameScreen(
+    boot: Boot,
+    val engine: Engine = boot.engine
+    ) : ArcadeSpaceScreen(boot), GameEventListener {
 
 
     override fun show() {
-        LOG.debug { "First screen has been shown" }
+        LOG.debug { "Game screen has been shown" }
 
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
 

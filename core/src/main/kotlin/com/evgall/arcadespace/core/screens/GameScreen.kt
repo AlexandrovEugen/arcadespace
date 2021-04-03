@@ -82,6 +82,7 @@ class GameScreen(
     override fun render(delta: Float) {
         (boot.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
+        audioService.update()
         LOG.debug {
             "Render calls: ${(boot.batch as SpriteBatch).renderCalls}"
         }

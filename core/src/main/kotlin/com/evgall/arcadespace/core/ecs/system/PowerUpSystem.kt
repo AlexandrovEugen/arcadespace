@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.systems.IteratingSystem
 import com.badlogic.gdx.math.MathUtils
 import com.badlogic.gdx.math.Rectangle
+import com.evgall.arcadespace.core.AudioService
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
 import com.evgall.arcadespace.core.event.GameEvent
@@ -32,7 +33,8 @@ private class SpawnPattern(
 )
 
 class PowerUpSystem(
-    private val gameEventManager: GameEventManager
+    private val gameEventManager: GameEventManager,
+    private val audioService: AudioService
 ) :
     IteratingSystem(allOf(PowerUpComponent::class, TransformComponent::class).exclude(RemoveComponent::class).get()) {
 
@@ -129,6 +131,8 @@ class PowerUpSystem(
                 it.life = min(it.maxLife, it.life + powerUpComp.lifeGain)
                 it.shield = min(it.maxShield, it.shield + powerUpComp.shieldGain)
             }
+            audioService.play(powerUpComp.soundAsset)
+
             gameEventManager.dispatchEvent(GameEvent.CollectPowerUp.apply {
                 this.player = player
                 this.type = powerUpComp

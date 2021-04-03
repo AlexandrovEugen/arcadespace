@@ -41,13 +41,15 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
         AssetStorage()
     }
 
+    val audioService: AudioService by lazy { DefaultAudioService(assets) }
+
     val engine: Engine by lazy {
-        val graphicsAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.description]
+        val graphicsAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.descriptor]
 
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
             addSystem(MoveSystem())
-            addSystem(PowerUpSystem(gameEventManager))
+            addSystem(PowerUpSystem(gameEventManager, audioService))
             addSystem(DamageSystem(gameEventManager))
             addSystem(CameraShakeSystem(gameEventManager, viewPort.camera))
             addSystem(
@@ -64,7 +66,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                     uiViewport,
                     batch,
                     viewPort,
-                    assets[TextureAsset.BACKGROUND.description],
+                    assets[TextureAsset.BACKGROUND.descriptor],
                     gameEventManager
                 )
             )

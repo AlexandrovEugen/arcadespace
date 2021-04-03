@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.UNIT_SCALE
 import com.evgall.arcadespace.core.V_WIDTH
+import com.evgall.arcadespace.core.ecs.asset.MusicAsset
 import com.evgall.arcadespace.core.ecs.component.*
 import com.evgall.arcadespace.core.event.GameEvent
 import com.evgall.arcadespace.core.event.GameEventListener
@@ -30,6 +31,8 @@ class GameScreen(
         LOG.debug { "Game screen has been shown" }
 
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
+
+        audioService.play(MusicAsset.GAME)
 
         spawnPlayer()
 
@@ -79,6 +82,7 @@ class GameScreen(
     override fun render(delta: Float) {
         (boot.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
+        audioService.update()
         LOG.debug {
             "Render calls: ${(boot.batch as SpriteBatch).renderCalls}"
         }

@@ -4,6 +4,7 @@ import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.Application.LOG_DEBUG
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -19,6 +20,7 @@ import ktx.async.KtxAsync
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
+import ktx.preferences.set
 
 
 private val LOG: Logger = logger<Boot>()
@@ -42,6 +44,8 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     }
 
     val audioService: AudioService by lazy { DefaultAudioService(assets) }
+    val preferences: Preferences by lazy { Gdx.app.getPreferences("arcade-space") }
+
 
     val engine: Engine by lazy {
         val graphicsAtlas = assets[TextureAtlasAsset.GAME_GRAPHICS.descriptor]

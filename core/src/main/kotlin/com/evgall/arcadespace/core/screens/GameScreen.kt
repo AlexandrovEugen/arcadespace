@@ -1,20 +1,24 @@
 package com.evgall.arcadespace.core.screens
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.UNIT_SCALE
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.asset.MusicAsset
 import com.evgall.arcadespace.core.ecs.component.*
+import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import com.evgall.arcadespace.core.event.GameEvent
 import com.evgall.arcadespace.core.event.GameEventListener
-import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import ktx.ashley.entity
 import ktx.ashley.with
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
+import ktx.preferences.flush
+import ktx.preferences.get
+import ktx.preferences.set
 import kotlin.math.min
 
 private val LOG: Logger = logger<GameScreen>()
@@ -90,7 +94,17 @@ class GameScreen(
 
     override fun onEvent(event: GameEvent) {
         when (event) {
-            is GameEvent.PlayerDeath -> spawnPlayer()
+            is GameEvent.PlayerDeath -> {
+                LOG.debug { "Player has been died with a distance of ${event.distance}" }
+                preferences.flush{
+                    this["current-score"] = event.distance
+                    if (this["high-score", 0f] < event.distance){
+                        LOG.debug { "Player has beaten previous record" }
+                        this["high-score"] = event.distance
+                    }
+                }
+                spawnPlayer()
+            }
             else -> TODO()
         }
     }

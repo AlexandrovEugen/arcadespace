@@ -9,6 +9,7 @@ import com.evgall.arcadespace.core.ecs.component.*
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -75,7 +76,7 @@ class MoveSystem : IteratingSystem(
         if (playerComponent != null) {
             //player movement
             entity[FacingComponent.mapper]?.let { facingComponent ->
-                movePlayer(transformComponent, moveComponent, facingComponent, deltaTime)
+                movePlayer(playerComponent, transformComponent, moveComponent, facingComponent, deltaTime)
             }
         } else {
             //other movement like powerups
@@ -84,25 +85,28 @@ class MoveSystem : IteratingSystem(
     }
 
     private fun movePlayer(
-        transformComponent: TransformComponent,
-        moveComponent: MoveComponent,
-        facingComponent: FacingComponent,
+        player: PlayerComponent,
+        transform: TransformComponent,
+        move: MoveComponent,
+        facing: FacingComponent,
         deltaTime: Float
     ) {
         //update horizontal speed
-        moveComponent.speed.x = when (facingComponent.direction) {
-            FacingDirection.LEFT -> min(0f, moveComponent.speed.x - HOR_ACCELERATION * deltaTime)
-            FacingDirection.RIGHT -> max(0f, moveComponent.speed.x + HOR_ACCELERATION * deltaTime)
+        move.speed.x = when (facing.direction) {
+            FacingDirection.LEFT -> min(0f, move.speed.x - HOR_ACCELERATION * deltaTime)
+            FacingDirection.RIGHT -> max(0f, move.speed.x + HOR_ACCELERATION * deltaTime)
             else -> 0f
         }
 
-        moveComponent.speed.x = MathUtils.clamp(moveComponent.speed.x, -MAX_HOR_SPEED, MAX_HOR_SPEED)
+        move.speed.x = MathUtils.clamp(move.speed.x, -MAX_HOR_SPEED, MAX_HOR_SPEED)
         //update vertical speed
-        moveComponent.speed.y = MathUtils.clamp(
-            moveComponent.speed.y - VER_ACCELERATION * deltaTime,
+        move.speed.y = MathUtils.clamp(
+            move.speed.y - VER_ACCELERATION * deltaTime,
             -MAX_VER_NEG_PLAYER_SPEED, MAX_VER_POS_PLAYER_SPEED
         )
-        moveEntity(transformComponent, moveComponent, deltaTime)
+        val oldY = transform.position.y
+        moveEntity(transform, move, deltaTime)
+        player.distance += abs(transform.position.y - oldY)
     }
 
     private fun moveEntity(transformComponent: TransformComponent, moveComponent: MoveComponent, deltaTime: Float) {

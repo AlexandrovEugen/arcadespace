@@ -1,10 +1,7 @@
 package com.evgall.arcadespace.core.screens
 
 import com.evgall.arcadespace.core.Boot
-import com.evgall.arcadespace.core.ecs.asset.MusicAsset
-import com.evgall.arcadespace.core.ecs.asset.SoundAsset
-import com.evgall.arcadespace.core.ecs.asset.TextureAsset
-import com.evgall.arcadespace.core.ecs.asset.TextureAtlasAsset
+import com.evgall.arcadespace.core.ecs.asset.*
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import ktx.async.KtxAsync
@@ -25,7 +22,8 @@ class LoadingScreen(boot: Boot) : ArcadeSpaceScreen(boot) {
         val assetsRef = gdxArrayOf(
             TextureAsset.values().map { assetStorage.loadAsync(it.descriptor) },
             TextureAtlasAsset.values().map { assetStorage.loadAsync(it.descriptor) },
-            SoundAsset.values().map { assetStorage.loadAsync(it.descriptor) }
+            SoundAsset.values().map { assetStorage.loadAsync(it.descriptor) },
+            ShaderProgramAsset.values().map {assetStorage.loadAsync(it.descriptor)}
         ).flatten()
         //once assets are loaded -> change to GameScreen
         KtxAsync.launch {

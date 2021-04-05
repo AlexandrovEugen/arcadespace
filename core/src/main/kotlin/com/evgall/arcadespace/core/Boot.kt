@@ -8,6 +8,7 @@ import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.evgall.arcadespace.core.ecs.asset.ShaderProgramAsset
 import com.evgall.arcadespace.core.ecs.asset.TextureAsset
 import com.evgall.arcadespace.core.ecs.asset.TextureAtlasAsset
 import com.evgall.arcadespace.core.event.GameEventManager
@@ -20,7 +21,6 @@ import ktx.async.KtxAsync
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
-import ktx.preferences.set
 
 
 private val LOG: Logger = logger<Boot>()
@@ -71,7 +71,8 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
                     batch,
                     viewPort,
                     assets[TextureAsset.BACKGROUND.descriptor],
-                    gameEventManager
+                    gameEventManager,
+                    assets[ShaderProgramAsset.OUTLINE.descriptor]
                 )
             )
             addSystem(RemoveSystem())

@@ -1,7 +1,6 @@
 package com.evgall.arcadespace.core.screens
 
 import com.badlogic.ashley.core.Engine
-import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.evgall.arcadespace.core.Boot
 import com.evgall.arcadespace.core.UNIT_SCALE
@@ -28,7 +27,7 @@ private const val MAX_DELTA_TIME = 1 / 20f
 class GameScreen(
     boot: Boot,
     val engine: Engine = boot.engine
-    ) : ArcadeSpaceScreen(boot), GameEventListener {
+) : ArcadeSpaceScreen(boot), GameEventListener {
 
 
     override fun show() {
@@ -96,9 +95,9 @@ class GameScreen(
         when (event) {
             is GameEvent.PlayerDeath -> {
                 LOG.debug { "Player has been died with a distance of ${event.distance}" }
-                preferences.flush{
+                preferences.flush {
                     this["current-score"] = event.distance
-                    if (this["high-score", 0f] < event.distance){
+                    if (this["high-score", 0f] < event.distance) {
                         LOG.debug { "Player has beaten previous record" }
                         this["high-score"] = event.distance
                     }

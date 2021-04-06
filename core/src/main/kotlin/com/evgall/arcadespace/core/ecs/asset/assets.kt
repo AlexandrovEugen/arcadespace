@@ -1,10 +1,12 @@
 package com.evgall.arcadespace.core.ecs.asset
 
 import com.badlogic.gdx.assets.AssetDescriptor
+import com.badlogic.gdx.assets.loaders.BitmapFontLoader
 import com.badlogic.gdx.assets.loaders.ShaderProgramLoader
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.glutils.ShaderProgram
 
@@ -19,9 +21,11 @@ enum class TextureAsset(
 enum class TextureAtlasAsset(
     fileName: String,
     directory: String = "graphics",
+    val isSkinAtlas: Boolean = false,
     val descriptor: AssetDescriptor<TextureAtlas> = AssetDescriptor("$directory/$fileName", TextureAtlas::class.java)
 ) {
-    GAME_GRAPHICS("graphics.atlas")
+    GAME_GRAPHICS("graphics.atlas"),
+    UI_GRAPHICS("ui.atlas", isSkinAtlas = true)
 }
 
 enum class SoundAsset(
@@ -55,11 +59,26 @@ enum class ShaderProgramAsset(
         "$directory/$vertexFileName/$fragmentFileName",
         ShaderProgram::class.java,
         ShaderProgramLoader.ShaderProgramParameter().apply {
-            vertexFile ="$directory/$vertexFileName"
+            vertexFile = "$directory/$vertexFileName"
             fragmentFile = "$directory/$fragmentFileName"
 
         }
     )
 ) {
     OUTLINE("default.vert", "outline.frag")
+}
+
+enum class BitmapFontAsset(
+    fileName: String,
+    directory: String = "ui",
+    val descriptor: AssetDescriptor<BitmapFont> = AssetDescriptor(
+        "$directory/$fileName",
+        BitmapFont::class.java,
+        BitmapFontLoader.BitmapFontParameter().apply {
+            atlasName = TextureAtlasAsset.UI_GRAPHICS.descriptor.fileName
+        }
+    )
+) {
+    FONT_LARGE_GRADIENT("font11_gradient.fnt"),
+    FONT_DEFAULT("font8.fnt")
 }

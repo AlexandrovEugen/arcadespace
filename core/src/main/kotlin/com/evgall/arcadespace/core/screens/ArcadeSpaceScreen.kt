@@ -1,6 +1,7 @@
 package com.evgall.arcadespace.core.screens
 
 import com.badlogic.gdx.Preferences
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.Viewport
 import com.evgall.arcadespace.core.AudioService
 import com.evgall.arcadespace.core.Boot
@@ -15,7 +16,8 @@ abstract class ArcadeSpaceScreen(
     val gameEventManager: GameEventManager = boot.gameEventManager,
     val assetStorage: AssetStorage = boot.assets,
     val audioService: AudioService = boot.audioService,
-    val preferences: Preferences = boot.preferences
+    val preferences: Preferences = boot.preferences,
+    val stage: Stage = boot.stage
 ) : KtxScreen {
 
 
@@ -23,4 +25,6 @@ abstract class ArcadeSpaceScreen(
         viewPort.update(width, height, true)
         uiViewPort.update(width, height, true)
     }
+
+    protected open fun setUpUI() = Unit
 }

@@ -7,17 +7,23 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.evgall.arcadespace.core.ecs.asset.BitmapFontAsset
 import com.evgall.arcadespace.core.ecs.asset.ShaderProgramAsset
 import com.evgall.arcadespace.core.ecs.asset.TextureAsset
 import com.evgall.arcadespace.core.ecs.asset.TextureAtlasAsset
-import com.evgall.arcadespace.core.event.GameEventManager
 import com.evgall.arcadespace.core.ecs.system.*
+import com.evgall.arcadespace.core.event.GameEventManager
 import com.evgall.arcadespace.core.screens.ArcadeSpaceScreen
 import com.evgall.arcadespace.core.screens.LoadingScreen
+import com.evgall.arcadespace.core.ui.createSkin
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import ktx.app.KtxGame
 import ktx.assets.async.AssetStorage
 import ktx.async.KtxAsync
+import ktx.collections.gdxArrayOf
 import ktx.log.Logger
 import ktx.log.debug
 import ktx.log.logger
@@ -35,6 +41,11 @@ const val V_HEIGHT_PIXELS = 240
 class Boot : KtxGame<ArcadeSpaceScreen>() {
 
     val uiViewport = FitViewport(V_WIDTH_PIXELS.toFloat(), V_HEIGHT_PIXELS.toFloat())
+    val stage: Stage by lazy {
+        val result = Stage(uiViewport, batch)
+        Gdx.input.inputProcessor = result
+        result
+    }
     val viewPort = FitViewport(V_WIDTH.toFloat(), V_HEIGHT.toFloat())
     val batch: Batch by lazy { SpriteBatch() }
     val gameEventManager = GameEventManager()
@@ -83,8 +94,17 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
     override fun create() {
         Gdx.app.logLevel = LOG_DEBUG
         LOG.debug { "Create game instance" }
-        addScreen(LoadingScreen(this))
-        setScreen<LoadingScreen>()
+        val assetsRefs = gdxArrayOf(
+            TextureAtlasAsset.values().filter { it.isSkinAtlas }.map { assets.loadAsync(it.descriptor) },
+            BitmapFontAsset.values().map { assets.loadAsync(it.descriptor) }
+        ).flatten()
+
+        KtxAsync.launch {
+            assetsRefs.joinAll()
+            createSkin(assets)
+            addScreen(LoadingScreen(this@Boot))
+            setScreen<LoadingScreen>()
+        }
     }
 
     override fun dispose() {
@@ -93,6 +113,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
         LOG.debug { "Sprites in batch: ${(batch as SpriteBatch).maxSpritesInBatch}" }
         batch.dispose()
         assets.dispose()
+        stage.dispose()
     }
 
 }

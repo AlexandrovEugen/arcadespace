@@ -30,6 +30,20 @@ sealed class GameEvent {
 
         override fun toString(): String = "PlayerHit(player=$player, life=$life, maxLife=$maxLife)"
     }
+
+    object PlayerBlock : GameEvent() {
+        var shield = 0f
+        var maxShield = 0f
+
+        override fun toString() = "PlayerBlock(shield=$shield,maxShield=$maxShield)"
+    }
+
+    object PlayerMove: GameEvent(){
+        var speed = 0f
+        var distance = 0f
+
+        override fun toString() = "PlayerMove(speed=$speed,distance=$distance)"
+    }
 }
 
 

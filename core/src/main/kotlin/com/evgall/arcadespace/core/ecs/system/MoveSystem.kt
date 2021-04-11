@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.MathUtils
 import com.evgall.arcadespace.core.V_HEIGHT
 import com.evgall.arcadespace.core.V_WIDTH
 import com.evgall.arcadespace.core.ecs.component.*
+import com.evgall.arcadespace.core.event.GameEvent
+import com.evgall.arcadespace.core.event.GameEventManager
 import ktx.ashley.allOf
 import ktx.ashley.exclude
 import ktx.ashley.get
@@ -20,7 +22,9 @@ private const val MAX_VER_NEG_PLAYER_SPEED = 0.75f
 private const val MAX_VER_POS_PLAYER_SPEED = 5f
 private const val MAX_HOR_SPEED = 5.5f
 
-class MoveSystem : IteratingSystem(
+class MoveSystem(
+    private val gameEventManager: GameEventManager
+) : IteratingSystem(
     allOf(TransformComponent::class, MoveComponent::class)
         .exclude(RemoveComponent::class)
         .get()
@@ -107,6 +111,10 @@ class MoveSystem : IteratingSystem(
         val oldY = transform.position.y
         moveEntity(transform, move, deltaTime)
         player.distance += abs(transform.position.y - oldY)
+        gameEventManager.dispatchEvent(GameEvent.PlayerMove.apply {
+            distance = player.distance
+            speed = move.speed.y
+        })
     }
 
     private fun moveEntity(transformComponent: TransformComponent, moveComponent: MoveComponent, deltaTime: Float) {

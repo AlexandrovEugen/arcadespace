@@ -38,6 +38,10 @@ class DamageSystem(
         if (transformComponent.position.y <= DAMAGE_AREA_HEIGHT) {
             var damage = DAMAGE_PER_SECOND * deltaTime
             if (playerComponent.shield > 0f) {
+                gameEventManager.dispatchEvent(GameEvent.PlayerBlock.apply {
+                    this.shield = playerComponent.shield
+                    this.maxShield = playerComponent.maxShield
+                })
                 val blockAmountOfDamage = playerComponent.shield
                 playerComponent.shield = max(0f, playerComponent.shield - damage)
                 damage -= blockAmountOfDamage

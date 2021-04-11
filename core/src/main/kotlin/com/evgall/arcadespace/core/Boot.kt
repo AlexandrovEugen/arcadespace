@@ -63,7 +63,7 @@ class Boot : KtxGame<ArcadeSpaceScreen>() {
 
         PooledEngine().apply {
             addSystem(PlayerSystem(viewPort))
-            addSystem(MoveSystem())
+            addSystem(MoveSystem(gameEventManager))
             addSystem(PowerUpSystem(gameEventManager, audioService))
             addSystem(DamageSystem(gameEventManager))
             addSystem(CameraShakeSystem(gameEventManager, viewPort.camera))

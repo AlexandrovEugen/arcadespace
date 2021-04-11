@@ -10,7 +10,10 @@ import com.evgall.arcadespace.core.ecs.component.*
 import com.evgall.arcadespace.core.ecs.system.DAMAGE_AREA_HEIGHT
 import com.evgall.arcadespace.core.event.GameEvent
 import com.evgall.arcadespace.core.event.GameEventListener
+import com.evgall.arcadespace.core.ui.GameUI
+import ktx.actors.plusAssign
 import ktx.ashley.entity
+import ktx.ashley.get
 import ktx.ashley.with
 import ktx.log.Logger
 import ktx.log.debug
@@ -29,12 +32,16 @@ class GameScreen(
     val engine: Engine = boot.engine
 ) : ArcadeSpaceScreen(boot), GameEventListener {
 
+    private val ui = GameUI()
 
     override fun show() {
         LOG.debug { "Game screen has been shown" }
 
         gameEventManager.addListener(GameEvent.PlayerDeath::class, this)
-
+        gameEventManager.addListener(GameEvent.PlayerHit::class, this)
+        gameEventManager.addListener(GameEvent.CollectPowerUp::class, this)
+        gameEventManager.addListener(GameEvent.PlayerBlock::class, this)
+        gameEventManager.addListener(GameEvent.PlayerMove::class, this)
         audioService.play(MusicAsset.GAME)
 
         spawnPlayer()
@@ -51,11 +58,21 @@ class GameScreen(
             }
             with<GraphicsComponent>()
         }
+        setUpUI()
+    }
+
+    override fun setUpUI() {
+        stage += ui
     }
 
     override fun hide() {
         super.hide()
+        stage.clear()
         gameEventManager.removeListener(GameEvent.PlayerDeath::class, this)
+        gameEventManager.removeListener(GameEvent.PlayerHit::class, this)
+        gameEventManager.removeListener(GameEvent.CollectPowerUp::class, this)
+        gameEventManager.removeListener(GameEvent.PlayerBlock::class, this)
+        gameEventManager.removeListener(GameEvent.PlayerMove::class, this)
     }
 
     private fun spawnPlayer() {
@@ -86,6 +103,11 @@ class GameScreen(
         (boot.batch as SpriteBatch).renderCalls = 0
         engine.update(min(MAX_DELTA_TIME, delta))
         audioService.update()
+        stage.run {
+            viewport.apply()
+            act()
+            draw()
+        }
         LOG.debug {
             "Render calls: ${(boot.batch as SpriteBatch).renderCalls}"
         }
@@ -103,8 +125,37 @@ class GameScreen(
                     }
                 }
                 spawnPlayer()
+                ui.updateLife(MAX_LIFE, MAX_LIFE)
             }
-            else -> TODO()
+            is GameEvent.PlayerHit -> {
+                ui.updateLife(event.life, event.maxLife)
+            }
+            is GameEvent.CollectPowerUp -> {
+                powerUp(event)
+            }
+            is GameEvent.PlayerBlock -> {
+                ui.updateShield(event.shield, event.maxShield)
+            }
+            is GameEvent.PlayerMove -> {
+                ui.updateDistance(event.distance)
+                ui.updateSpeed(event.speed)
+            }
+        }
+    }
+
+    private fun powerUp(event: GameEvent.CollectPowerUp) {
+        event.player[PlayerComponent.mapper]?.let { player ->
+            when (event.type) {
+                PowerUpType.LIFE -> {
+                    ui.updateLife(player.life, player.maxLife)
+                }
+                PowerUpType.SHIELD -> {
+                    ui.updateShield(player.shield, player.maxShield)
+                }
+                else -> {
+                    //do nothing
+                }
+            }
         }
     }
 }
